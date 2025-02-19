@@ -15,7 +15,7 @@ Router.get('/users', async function (req, res) {
 Router.post('/users', async function (req, res) {
     try {
         console.log(req.body, req.query);
-        if (req.body.first_name != "" || req.body.last_name != "") {
+        if (req.body.first_name != "" && req.body.last_name != "") {
             await prisma.users.create({
                 data: {
                     first_name: req.body.first_name,
@@ -24,7 +24,16 @@ Router.post('/users', async function (req, res) {
             })
             return res.status(201).send({ msg: "Success user have been created!" });
         } else {
-            return res.status(406).send({ msg: 'Please complete the following' });
+            let errMsg = {}
+            if (req.body.first_name == "") {
+                errMsg['first_name'] = "First name is required field.";
+            }
+            if (req.body.last_name == "") {
+                errMsg['last_name'] = "Last name is required field.";
+            }
+            return res.status(406).send({
+                msg: errMsg,
+            });
         }
     } catch (e) {
         console.log(e);

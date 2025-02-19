@@ -11,12 +11,13 @@
 
 <body>
     <div class="container">
-        <div class="alert alert-danger mt-3" id="error_msg" role="alert"></div>
         <div class="alert alert-success mt-3" id="success_msg" role="alert"></div>
         <form action="http://localhost:3000/users" method="post" id="form">
             <div class="mb-3">
                 First Name: <input class="form-control" type="text" name="first_name" id="first_name">
+                <p id="first_name_err" style="color:red"></p>
                 Last Name: <input type="text" name="last_name" id="last_name" class="form-control">
+                <p id="last_name_err" style="color:red"></p>
             </div>
             <div class="mb-3">
                 <input type="submit" value="Submit" class="btn btn-primary">
@@ -60,10 +61,12 @@
                     data: $(this).serialize(),
                     statusCode: {
                         406: function (res) {
+                            $("#first_name_err,#last_name_err").show();
                             console.log(res);
-                            $('#error_msg').html(res.responseJSON.msg);
-                            $('#error_msg').show();
-                            $("#error_msg").fadeOut(10000);
+                            let err = res.responseJSON.msg;
+                            $('#first_name_err').html(err.first_name);
+                            $('#last_name_err').html(err.last_name);
+                            $("#first_name_err,#last_name_err").fadeOut(10000);
                         },
                         201: function (res) {
                             console.log(res);
